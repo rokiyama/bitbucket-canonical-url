@@ -3,18 +3,24 @@ import { crx, defineManifest } from "@crxjs/vite-plugin";
 
 const manifest = defineManifest({
   manifest_version: 3,
-  name: "拡張機能の名前",
-  description: "拡張機能の説明",
+  name: "Bitbucket canonical URL",
+  description: "Canonize Bitbucket URL on clicking icon",
   version: "1.0.0",
-  icons: {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png",
-  },
   action: {
-    default_popup: "index.html",
+    default_title: "Bitbucket canonical URL",
   },
   permissions: ["tabs"],
+  background: {
+    service_worker: "src/background.ts",
+    type: "module",
+  },
+  content_scripts: [
+    {
+      matches: ["https://bitbucket.org/*"],
+      js: ["src/content.ts"],
+      run_at: "document_end",
+    },
+  ],
 });
 
 export default defineConfig({
